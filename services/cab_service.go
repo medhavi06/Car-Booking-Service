@@ -10,14 +10,14 @@ type CabService struct {
 	tripRepo interfaces.ITripRepository
 }
 
-func (s *CabService) UpdateDriverLocation(id string, location *models.Location) {
-	_ = s.repo.UpdateLocation(id, location)
+func (s *CabService) UpdateDriverLocation(id string, location *models.Location) error {
+	return s.repo.UpdateLocation(id, location)
 }
 
 func NewCabService(repo interfaces.ICabRepository) *CabService {
 	return &CabService{repo: repo}
 }
 
-func (s *CabService) AddCab(id, no, name, phone string) {
-	_ = s.repo.AddCab(id, no, name, phone)
+func (s *CabService) AddCab(id, no, name, phone string) error {
+	return s.repo.AddCab(id, no, name, phone)
 }

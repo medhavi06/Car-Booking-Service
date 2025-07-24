@@ -13,10 +13,10 @@ func NewRiderService(repo interfaces.IRiderInterface) *RiderService {
 	return &RiderService{repo: repo}
 }
 
-func (s *RiderService) AddRider(id, name, phone, email string) {
-	_ = s.repo.AddRider(id, name, phone, email)
+func (s *RiderService) AddRider(id, name, phone, email string) error {
+	return s.repo.AddRider(id, name, phone, email)
 }
 
-func (s *RiderService) GetRider(id string) *models.Rider {
-	return s.GetRider(id)
+func (s *RiderService) GetRider(id string) (*models.Rider, error) {
+	return s.repo.GetRider(id)
 }

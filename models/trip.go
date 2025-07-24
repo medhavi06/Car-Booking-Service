@@ -9,9 +9,9 @@ const (
 )
 
 type Trip struct {
-	Id          string
-	Rider       Rider
-	Driver      Cab
+	ID          string
+	RiderID     string
+	CabID       string
 	Source      Location
 	Destination Location
 	Charges     float32

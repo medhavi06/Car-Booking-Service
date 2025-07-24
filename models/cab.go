@@ -1,12 +1,12 @@
 package models
 
 type Cab struct {
-	Id              string
-	No              string
+	ID              string
+	Number          string
 	DriverName      string
-	PhoneNo         string
+	PhoneNumber     string
 	Rating          float32
 	CurrentLocation Location
 	Availability    bool
-	CurrentTrip     *Trip
+	CurrentTripID   string // empty if not on a trip
 }

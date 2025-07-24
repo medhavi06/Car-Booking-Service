@@ -21,11 +21,17 @@ func (s *TripService) CreateTrip(riderId string, source, destination models.Loca
 	if err != nil {
 		return nil, errors.New("no driver available")
 	}
-	createdTrip, err := s.tripRepo.CreateTrip(*rider, *nearbyAvailableDrivers[0], source, destination)
+	cab := nearbyAvailableDrivers[0]
+	trip, err := s.tripRepo.CreateTrip(rider.Id, cab.ID, source, destination)
 	if err != nil {
 		return nil, errors.New("failed to create trip")
 	}
-	return createdTrip, nil
+	// Set cab's CurrentTripID
+	err = s.cabRepo.SetCurrentTripID(cab.ID, trip.ID)
+	if err != nil {
+		return nil, errors.New("failed to update cab status")
+	}
+	return trip, nil
 }
 
 func (s *TripService) GetTripsByRider(riderID string) ([]*models.Trip, error) {
@@ -36,10 +42,19 @@ func (s *TripService) GetTripsByRider(riderID string) ([]*models.Trip, error) {
 	return allTrips, nil
 }
 
-func (s *TripService) EndTrip(driver models.Cab) {
-	_ = s.tripRepo.EndTrip(driver)
+func (s *TripService) EndTrip(tripID string) error {
+	trip, err := s.tripRepo.GetTrip(tripID)
+	if err != nil {
+		return err
+	}
+	err = s.tripRepo.EndTrip(tripID)
+	if err != nil {
+		return err
+	}
+	// Clear cab's CurrentTripID
+	return s.cabRepo.SetCurrentTripID(trip.CabID, "")
 }
 
-func NewTripService(tripRepo interfaces.ITripRepository) *TripService {
-	return &TripService{tripRepo: tripRepo}
+func NewTripService(tripRepo interfaces.ITripRepository, riderRepo interfaces.IRiderInterface, cabRepo interfaces.ICabRepository) *TripService {
+	return &TripService{tripRepo: tripRepo, riderRepo: riderRepo, cabRepo: cabRepo}
 }
